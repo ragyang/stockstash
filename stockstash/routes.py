@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template, url_for
 from stockstash import app, mongo
  
 
@@ -13,6 +13,10 @@ def read():
 	user = mongo.db.users
 	_id = user.find_one({'name' : 'some full name'})
 	return 'You found ' + _id['name']
+
+@app.route('/register')
+def register():
+	return render_template('register.html')
 
 if __name__ == "__main__":
 	app.run(host="0.0.0.0", port=8000, debug=True)
