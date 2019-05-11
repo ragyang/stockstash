@@ -13,3 +13,5 @@ flask_wtf
 flask_mongoengine
 
 flask_login
+
+flask_bcrypt
