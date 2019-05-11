@@ -5,3 +5,11 @@ gunicorn
 flask_pymongo
 
 pandas_datareader
+
+wtforms
+
+flask_wtf
+
+flask_mongoengine
+
+flask_login
