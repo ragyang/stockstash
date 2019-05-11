@@ -14,7 +14,7 @@ def get_TIME_SERIES_DAILY(ticker):
     API Documentation:
         https://www.alphavantage.co/documentation/
     """
-    apikey = 'W6Y6NLWDMM2FVX9B'
+    apikey = 'REDACTED'
     fullurl = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=" + ticker + "&apikey=" + apikey
     r = requests.get(fullurl)
     r_json = json.loads(r.text)
