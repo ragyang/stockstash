@@ -2,25 +2,32 @@
 {% block content %}
     <div class="content-section">
         <form method="POST" action="" novalidate="novalidate">
-            <!-- csrf token -->
+
             {{ form.hidden_tag() }}
 
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Join Today</legend>
+                <legend class="border-bottom mb-3">Join StockStash</legend>
                 <div class="form-group">
-                    {{ form._id.label(class="form-control-label") }}
 
-                    {% if form._id.errors %}
-                        {{ form._id(class="form-control form-control-lg is-invalid") }}
+                    <!-- username field is email -->
+                    {{ form.username.label(class="form-control-label") }}
+
+                    {% if form.username.errors %}
+                        {{ form.username(class="form-control form-control-lg is-invalid") }}
+
+                        <!-- Warn invalid response-->
                         <div class="invalid-feedback">
-                            {% for error in form._id.errors %}
+                            {% for error in form.username.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form._id(class="form-control form-control-lg") }}
+                    <!-- Reference: https://getbootstrap.com/docs/4.0/components/forms/ -->
+                        {{ form.username(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+
+                <!-- password field, errors also get sent if matching from backend -->
                 <div class="form-group">
                     {{ form.password.label(class="form-control-label") }}
                     {% if form.password.errors %}
@@ -34,6 +41,8 @@
                         {{ form.password(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
+
+                <!-- confirm password field -->
                 <div class="form-group">
                     {{ form.confirm_password.label(class="form-control-label") }}
                     {% if form.confirm_password.errors %}
@@ -47,6 +56,8 @@
                         {{ form.confirm_password(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>    
+
+                <!-- first name field -->
                 <div class="form-group">
                     {{ form.fname.label(class="form-control-label") }}
                     {% if form.fname.errors %}
@@ -60,6 +71,8 @@
                         {{ form.fname(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>     
+
+                <!-- last name field -->
                 <div class="form-group">
                     {{ form.lname.label(class="form-control-label") }}
                     {% if form.lname.errors %}
@@ -73,6 +86,8 @@
                         {{ form.lname(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>    
+
+                <!-- brokerage field, this is optional -->
                 <div class="form-group">
                     {{ form.brokerage.label(class="form-control-label") }}
                     {% if form.brokerage.errors %}
@@ -86,26 +101,15 @@
                         {{ form.brokerage(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-                <div class="form-group">
-                    {{ form.account_created.label(class="form-control-label") }}
-                    {% if form.account_created.errors %}
-                        {{ form.account_created(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.account_created.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.account_created(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>        
+ 
             </fieldset>
+            <!-- submit form button -->
             <div class="form-group">
-                {{ form.submit(class="btn btn-outline-info") }}
+                {{ form.submit(class="btn btn-outline-success") }}
             </div>   
         </form>
     </div>
-    <div class="border-top pt-3">
+    <div class="border-top pt-4">
         <small class="text-muted">
             Already Have An Account? <a class="ml-2" href="{{ url_for('login') }}">Sign In</a>
         </small>
