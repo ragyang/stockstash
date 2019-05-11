@@ -3,3 +3,5 @@ flask
 gunicorn
 
 flask_pymongo
+
+pandas_datareader
