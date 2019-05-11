@@ -1,12 +1,22 @@
 from flask import Flask
 from flask_pymongo import PyMongo
+from flask_bcrypt import Bcrypt
+from flask_login import LoginManager
+from flask_mongoengine import MongoEngine
 
 app = Flask(__name__)
 
-app.config['MONGO_DBNAME'] = 'stockstash'
-app.config['MONGO_URI'] = 'mongodb://admin:ZQTymqcbB6aZgtRY@ds149056.mlab.com:49056/stockstash'
+app.config['MONGODB_SETTINGS'] = {
+    'db': 'REDACTED',
+    'host': 'REDACTED'
+}
+app.config['SECRET_KEY'] = 'some_secret_here'
 
-#init the database
-mongo = PyMongo(app)
+# password hashing with bcrypt
+bcrypt = Bcrypt(app)
+# init the database
+mongo = MongoEngine(app)
+# login manager
+login_manager = LoginManager(app)
 
 from stockstash import routes
