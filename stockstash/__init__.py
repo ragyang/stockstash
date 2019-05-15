@@ -7,8 +7,8 @@ from flask_mongoengine import MongoEngine
 app = Flask(__name__)
 
 app.config['MONGODB_SETTINGS'] = {
-    'db': 'REDACTED',
-    'host': 'REDACTED'
+    'db': 'stockstash',
+    'host': 'mongodb://admin:ZQTymqcbB6aZgtRY@ds149056.mlab.com:49056/stockstash'
 }
 app.config['SECRET_KEY'] = 'some_secret_here'
 

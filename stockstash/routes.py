@@ -3,6 +3,7 @@ from stockstash import app, mongo, bcrypt
 from stockstash.models import User
 from stockstash.forms import RegistrationForm, LoginForm
 from flask_login import login_user, current_user, logout_user
+from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
 
 @app.route("/")
 def index():
@@ -53,6 +54,18 @@ def portfolio():
 def logout():
     logout_user()
     return redirect(url_for('login'))
+
+# portfolio test
+@app.route('/portfolio-test', methods=['GET'])
+def portfolio_test():
+
+    user = User.objects.get(pk='test1@gmail.com')
+    print(user.brokerage)
+
+    stocks = ["fb", "tsla", "aapl", "mvis", "xlnx"]
+    date = get_most_recent_business_day()
+    data = (get_stock_data(stocks, date, date))
+    return render_template('portfolio-test.html', title='Portfolio Test', stockdata=data)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
