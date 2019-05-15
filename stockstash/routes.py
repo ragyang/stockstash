@@ -2,7 +2,7 @@ from flask import Flask, jsonify, render_template, url_for, flash, redirect
 from stockstash import app, mongo, bcrypt
 from stockstash.models import User
 from stockstash.forms import RegistrationForm, LoginForm
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
 
 @app.route("/")
@@ -57,15 +57,23 @@ def logout():
 
 # portfolio test
 @app.route('/portfolio-test', methods=['GET'])
+@login_required
 def portfolio_test():
 
+    print(current_user['_id'])
+    print(current_user['password'])
+    print(current_user['fname'])
+    print(current_user['lname'])
+    print(current_user['brokerage'])
+    '''
     user = User.objects.get(pk='test1@gmail.com')
     print(user.brokerage)
-
+    ''' 
     stocks = ["fb", "tsla", "aapl", "mvis", "xlnx"]
     date = get_most_recent_business_day()
     data = (get_stock_data(stocks, date, date))
     return render_template('portfolio-test.html', title='Portfolio Test', stockdata=data)
+    
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
