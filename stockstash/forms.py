@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DateField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 from stockstash.models import User
+from stockstash.api.alphavantage import is_valid_ticker
 
 # registration form
 class RegistrationForm(FlaskForm):
@@ -34,3 +35,16 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+# ticker form
+class AddStockForm(FlaskForm):
+    ticker = StringField('Ticker',
+                           validators=[DataRequired()])
+    price = StringField('Price Bought',
+                            validators=[DataRequired(), Length(min=1, max=100)])
+    date = DateField('Date Bought', format='%Y-%m-%d')
+    submit = SubmitField('Add Stock')
+
+    def validate_ticker(self, ticker):
+        if not is_valid_ticker(ticker.data):
+            raise ValidationError('Error! Not a valid ticker..')

@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, url_for, flash, redirect
 from stockstash import app, mongo, bcrypt
 from stockstash.models import User
-from stockstash.forms import RegistrationForm, LoginForm
+from stockstash.forms import RegistrationForm, LoginForm, AddStockForm
 from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
 
@@ -20,7 +20,7 @@ def login():
         user = User.objects.get(pk=form.username.data)
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            return redirect(url_for('portfolio'))
+            return redirect(url_for('portfolio_test'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
@@ -56,7 +56,7 @@ def logout():
     return redirect(url_for('login'))
 
 # portfolio test
-@app.route('/portfolio-test', methods=['GET'])
+@app.route('/portfolio-test', methods=['GET', 'POST'])
 @login_required
 def portfolio_test():
 
@@ -72,7 +72,16 @@ def portfolio_test():
     stocks = ["fb", "tsla", "aapl", "mvis", "xlnx"]
     date = get_most_recent_business_day()
     data = (get_stock_data(stocks, date, date))
-    return render_template('portfolio-test.html', title='Portfolio Test', stockdata=data)
+    # create the AddStockForm form object
+    form = AddStockForm()
+    if form.validate_on_submit():
+        # inserthere
+        user = User.objects.get(pk=current_user['_id'])
+        user.portfolio[0].ticker = "fb"
+        user.save()
+        flash(f"test flash")
+        return redirect(url_for('portfolio-test', 'success'))
+    return render_template('portfolio.html', title='Portfolio Test', stockdata=data, form=form)
     
 
 if __name__ == "__main__":
