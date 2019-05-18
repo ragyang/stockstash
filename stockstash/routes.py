@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, render_template, url_for, flash, redirect
 from stockstash import app, mongo, bcrypt
-from stockstash.models import User
+from stockstash.models import User, Portfolio
 from stockstash.forms import RegistrationForm, LoginForm, AddStockForm
 from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
@@ -37,7 +37,7 @@ def register():
         hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(_id=form.username.data,password=hashed_pass,
                     fname=form.fname.data, lname=form.lname.data,
-                    brokerage=form.brokerage.data)
+                    brokerage=form.brokerage.data, portfolio=Portfolio())
         user.save()
         flash(f'Welcome to StockStash {form.fname.data}! '
               f'\nPlease login with your new account.', 'success')
@@ -74,15 +74,28 @@ def portfolio_test():
     data = (get_stock_data(stocks, date, date))
     # create the AddStockForm form object
     form = AddStockForm()
+    user = User.objects.get(pk=current_user['_id'])
     if form.validate_on_submit():
         # inserthere
-        user = User.objects.get(pk=current_user['_id'])
-        user.portfolio[0].ticker = "fb"
+        print("works here")
+        #individual stock info
+        stock1 = Portfolio(ticker="tick", price="price", date="date")
+        user.portfolio.append(stock1)
         user.save()
-        flash(f"test flash")
-        return redirect(url_for('portfolio-test', 'success'))
+        #user.save()
+        flash(f'test flash', 'success')
+        return redirect(url_for('portfolio-test'))
     return render_template('portfolio.html', title='Portfolio Test', stockdata=data, form=form)
     
+
+@app.route('/update-test', methods=['GET', 'POST'])
+def update_test():
+    new_stock= Portfolio(ticker="testticker", price="testprice", date="testdate")
+    user = User.objects.get(pk='test5@gmail.com')
+    user.portfolio = new_stock
+    print(user.portfolio.ticker)
+    user.save()
+    return str(user)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

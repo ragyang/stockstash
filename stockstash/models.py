@@ -11,9 +11,9 @@ from flask_login import UserMixin
 def load_user(user_id):
     return User.objects.get(pk=user_id)
 class Portfolio(mongo.EmbeddedDocument):
-    ticker = StringField()
-    price = StringField()
-    date = StringField()
+    ticker = mongo.StringField()
+    price = mongo.StringField()
+    date = mongo.StringField()
 
 class User(mongo.Document, UserMixin):
     #_id is our username
