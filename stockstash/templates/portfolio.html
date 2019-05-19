@@ -1,6 +1,59 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section">
-       <h1>Portfolio</h1>
+        <form method="POST" action="" novalidate="novalidate">
+
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-3"> Add Stock: </legend>
+                <!-- ticker input -->
+                <div class="form-group">
+                    {{ form.ticker.label(class="form-control-label") }}
+                    {% if form.ticker.errors %}
+                    {{ form.ticker(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.ticker.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.ticker(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+
+            <fieldset class="form-group">
+                    <!-- price bought -->
+                    <div class="form-group">
+                        {{ form.price.label(class="form-control-label") }}
+                        {% if form.price.errors %}
+                        {{ form.price(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.price.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.price(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>        
+            </fieldset>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div> 
+        </form>
+
+
+        <!-- Display Stock Data -->
+        {% for key, value in data.items() %}
+            <h3>{{key}}</h1>
+            <h5>{{value}}</h2>
+        {% endfor %}
+
+    </div>
+    <div class="border-top pt-4">
+        <small class="text-muted">
+            Stockstash
+        </small>
     </div>
 {% endblock content %}

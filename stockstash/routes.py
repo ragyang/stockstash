@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, url_for, flash, redirect
 from stockstash import app, mongo, bcrypt
-from stockstash.models import User
-from stockstash.forms import RegistrationForm, LoginForm
+from stockstash.models import User, Portfolio
+from stockstash.forms import RegistrationForm, LoginForm, AddStockForm
 from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
 
@@ -37,17 +37,13 @@ def register():
         hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(_id=form.username.data,password=hashed_pass,
                     fname=form.fname.data, lname=form.lname.data,
-                    brokerage=form.brokerage.data)
+                    brokerage=form.brokerage.data, portfolio=Portfolio())
         user.save()
         flash(f'Welcome to StockStash {form.fname.data}! '
               f'\nPlease login with your new account.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
 
-# portfolio route
-@app.route('/portfolio', methods=['GET','POST'])
-def portfolio():
-    return render_template('portfolio.html', title='Portfolio')
 
 # logout route
 @app.route("/logout")
@@ -56,24 +52,31 @@ def logout():
     return redirect(url_for('login'))
 
 # portfolio test
-@app.route('/portfolio-test', methods=['GET'])
+@app.route('/portfolio', methods=['GET', 'POST'])
 @login_required
-def portfolio_test():
+def portfolio():
 
-    print(current_user['_id'])
-    print(current_user['password'])
-    print(current_user['fname'])
-    print(current_user['lname'])
-    print(current_user['brokerage'])
-    '''
-    user = User.objects.get(pk='test1@gmail.com')
-    print(user.brokerage)
-    ''' 
-    stocks = ["fb", "tsla", "aapl", "mvis", "xlnx"]
+    # Get the stock data from the current users portfolio
+    tickers = []
+    user = User.objects.get(pk=current_user['_id'])
+    for stock in user['portfolio']:
+        tickers.append(stock['ticker'])
     date = get_most_recent_business_day()
-    data = (get_stock_data(stocks, date, date))
-    return render_template('portfolio-test.html', title='Portfolio Test', stockdata=data)
+    stockdata = (get_stock_data(tickers, date, date))
     
+    # Form to add stocks to portfolio
+    form = AddStockForm()
+    user = User.objects.get(pk=current_user['_id'])
+    if form.validate_on_submit():
+        new_stock = Portfolio(ticker=form.ticker.data, price=form.price.data)
+        user = User.objects.get(pk=current_user['_id'])
+        user.portfolio.append(new_stock)
+        user.save()
+        flash(f'New stock added!', 'success')
+        return redirect(url_for('portfolio'))
+
+    return render_template('portfolio.html', title='Portfolio', data=stockdata, form=form)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
