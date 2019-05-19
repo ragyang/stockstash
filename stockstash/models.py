@@ -22,5 +22,5 @@ class User(mongo.Document, UserMixin):
     fname = mongo.StringField(required=True)
     lname = mongo.StringField(required=True)
     brokerage = mongo.StringField()
-    portfolio = mongo.EmbeddedDocumentField(Portfolio)
+    portfolio = mongo.EmbeddedDocumentListField(Portfolio)
     #account_created = mongo.DateTimeField(default=datetime.now)

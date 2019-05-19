@@ -48,4 +48,4 @@ class AddStockForm(FlaskForm):
 
     def validate_ticker(self, ticker):
         if not is_valid_ticker(ticker.data):
-            raise ValidationError('Error! Not a valid ticker..')
+            raise ValidationError('Error! Not a valid ticker.')

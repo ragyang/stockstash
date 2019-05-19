@@ -43,7 +43,13 @@
             </div> 
         </form>
 
-        {{ stockdata }}
+
+        <!-- Display Stock Data -->
+        {% for key, value in data.items() %}
+            <h3>{{key}}</h1>
+            <h5>{{value}}</h2>
+        {% endfor %}
+
     </div>
     <div class="border-top pt-4">
         <small class="text-muted">
