@@ -49,3 +49,17 @@ class AddStockForm(FlaskForm):
     def validate_ticker(self, ticker):
         if not is_valid_ticker(ticker.data):
             raise ValidationError('Error! Not a valid ticker.')
+
+# ticker form
+class AddStockFormWatchlist(FlaskForm):
+    ticker = StringField('Ticker',
+                           validators=[DataRequired()])
+    lowprice = StringField('Low Price',
+                            validators=[DataRequired(), Length(min=1, max=100)])
+    highprice = StringField('High Price',
+                            validators=[DataRequired(), Length(min=1, max=100)])
+    submit = SubmitField('Add Stock')
+
+    def validate_ticker(self, ticker):
+        if not is_valid_ticker(ticker.data):
+            raise ValidationError('Error! Not a valid ticker.')
