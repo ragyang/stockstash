@@ -111,5 +111,24 @@ def watchlist():
 
     return render_template('watchlist.html', title='Watchlist', apidata=apidata,  dbdata=dbdata, form=form)
 
+# delete from portfolio
+@app.route("/portfolio/<string:ticker_id>/delete", methods=['POST'])
+@login_required
+def delete_portfolio_ticker(ticker_id):
+    print(ticker_id)
+    user = User.objects(pk=current_user['_id'])
+    user.update_one(pull__portfolio__ticker = Portfolio(ticker=ticker_id).ticker)
+    flash(ticker_id + ' has been deleted from your portfolio', 'success')
+    return redirect(url_for('portfolio'))
+
+# delete from watchlist
+@app.route("/watchlist/<string:ticker_id>/delete", methods=['POST'])
+@login_required
+def delete_watchlist_ticker(ticker_id):
+    print(ticker_id)
+    user = User.objects(pk=current_user['_id'])
+    user.update_one(pull__watchlist__ticker = Watchlist(ticker=ticker_id).ticker)
+    flash(ticker_id + ' has been deleted from your watchlist', 'success')
+    return redirect(url_for('watchlist'))
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

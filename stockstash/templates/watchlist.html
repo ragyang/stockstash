@@ -70,6 +70,31 @@
         {% for key, value in dbdata.items() %}
             <h3>{{key}}</h1>
             <h5>{{value}}</h2>
+
+            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Remove Stock</button>
+                <!-- Modal -->
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Remove {{key}}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                    Are you sure you want to remove {{key}} from your watchlist?
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <form action="{{ url_for('delete_watchlist_ticker', ticker_id=key) }}" method="POST">
+                        <input type="submit" class="btn btn-danger" value="Delete">
+                    </form>
+                    </div>
+                </div>
+                </div>
+            </div>
+
         {% endfor %}
     </div>
     <div class="border-top pt-4">
