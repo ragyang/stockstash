@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, render_template, url_for, flash, redirect
 from stockstash import app, mongo, bcrypt
-from stockstash.models import User, Portfolio
-from stockstash.forms import RegistrationForm, LoginForm, AddStockForm
+from stockstash.models import User, Portfolio, Watchlist
+from stockstash.forms import RegistrationForm, LoginForm, AddStockForm, AddStockFormWatchlist
 from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
 
@@ -51,7 +51,7 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
-# portfolio test
+# portfolio
 @app.route('/portfolio', methods=['GET', 'POST'])
 @login_required
 def portfolio():
@@ -77,6 +77,39 @@ def portfolio():
 
     return render_template('portfolio.html', title='Portfolio', data=stockdata, form=form)
 
+# watchlist
+@app.route('/watchlist', methods=['GET', 'POST'])
+@login_required
+def watchlist():
+
+    # Get the stock data from api
+    tickers = []
+    user = User.objects.get(pk=current_user['_id'])
+    for stock in user['watchlist']:
+        tickers.append(stock['ticker'])
+    date = get_most_recent_business_day()
+    apidata = (get_stock_data(tickers, date, date))
+
+    # Get the stock data from database
+    dbdata = {}
+    for stock in user['watchlist']:
+        dbdata[stock['ticker']] = {
+            'High Price': float(stock['highprice']),
+            'Low Price': float(stock['lowprice'])
+        }
+
+    # Form to add stocks to portfolio
+    form = AddStockFormWatchlist()
+    user = User.objects.get(pk=current_user['_id'])
+    if form.validate_on_submit():
+        new_stock = Watchlist(ticker=form.ticker.data, lowprice=form.lowprice.data, highprice=form.highprice.data)
+        user = User.objects.get(pk=current_user['_id'])
+        user.watchlist.append(new_stock)
+        user.save()
+        flash(f'New stock added!', 'success')
+        return redirect(url_for('watchlist'))
+
+    return render_template('watchlist.html', title='Watchlist', apidata=apidata,  dbdata=dbdata, form=form)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)
