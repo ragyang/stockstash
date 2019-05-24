@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section">
+        <form method="POST" action="" novalidate="novalidate">
+
+            {{ form.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-3"> Add Stock: </legend>
+                <!-- ticker input -->
+                <div class="form-group">
+                    {{ form.ticker.label(class="form-control-label") }}
+                    {% if form.ticker.errors %}
+                    {{ form.ticker(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form.ticker.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.ticker(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+
+            <fieldset class="form-group">
+                    <!-- low price -->
+                    <div class="form-group">
+                        {{ form.lowprice.label(class="form-control-label") }}
+                        {% if form.lowprice.errors %}
+                        {{ form.lowprice(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.lowprice.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.lowprice(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <!-- high price -->
+                    <div class="form-group">
+                        {{ form.highprice.label(class="form-control-label") }}
+                        {% if form.highprice.errors %}
+                        {{ form.highprice(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.highprice.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.highprice(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>             
+            </fieldset>
+
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div> 
+        </form>
+
+
+        <!-- Display Stock Api Data -->
+        {% for key, value in apidata.items() %}
+            <h3>{{key}}</h1>
+            <h5>{{value}}</h2>
+        {% endfor %}
+
+        <!-- Display Stock Db Data -->
+        <!-- Display Stock Api Data -->
+        {% for key, value in dbdata.items() %}
+            <h3>{{key}}</h1>
+            <h5>{{value}}</h2>
+        {% endfor %}
+    </div>
+    <div class="border-top pt-4">
+        <small class="text-muted">
+            Stockstash
+        </small>
+    </div>
+{% endblock content %}

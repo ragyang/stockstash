@@ -10,17 +10,22 @@ from flask_login import UserMixin
 @login_manager.user_loader
 def load_user(user_id):
     return User.objects.get(pk=user_id)
+
 class Portfolio(mongo.EmbeddedDocument):
     ticker = mongo.StringField()
     price = mongo.StringField()
     date = mongo.StringField()
 
+class Watchlist(mongo.EmbeddedDocument):
+    ticker = mongo.StringField()
+    lowprice = mongo.StringField()
+    highprice = mongo.StringField()
+
 class User(mongo.Document, UserMixin):
-    #_id is our username
     _id = mongo.StringField(primary_key=True, required=True)
     password = mongo.StringField(requred=True)
     fname = mongo.StringField(required=True)
     lname = mongo.StringField(required=True)
     brokerage = mongo.StringField()
     portfolio = mongo.EmbeddedDocumentListField(Portfolio)
-    #account_created = mongo.DateTimeField(default=datetime.now)
+    watchlist = mongo.EmbeddedDocumentListField(Watchlist)
