@@ -22,7 +22,7 @@ class Watchlist(mongo.EmbeddedDocument):
     highprice = mongo.StringField()
 
 class User(mongo.Document, UserMixin):
-    _id = mongo.StringField(primary_key=True, required=True)
+    username = mongo.StringField(primary_key=True, required=True)
     password = mongo.StringField(requred=True)
     fname = mongo.StringField(required=True)
     lname = mongo.StringField(required=True)
