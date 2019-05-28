@@ -1,12 +1,13 @@
-from flask import Flask, jsonify, render_template, url_for, flash, redirect
+from flask import Flask, jsonify, render_template, url_for, flash, redirect, request
 from stockstash import app, mongo, bcrypt
 from stockstash.models import User, Portfolio, Watchlist
-from stockstash.forms import RegistrationForm, LoginForm, AddStockForm, AddStockFormWatchlist
+from stockstash.forms import RegistrationForm, LoginForm, AddStockForm, AddStockFormWatchlist, AccountForm
 from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
 
 #DELETE
 from datetime import timedelta
+
 
 @app.route("/")
 def index():
@@ -27,6 +28,27 @@ def login():
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+# account route
+@app.route('/account', methods=['GET','POST'])
+@login_required
+def account():
+    form = AccountForm()
+
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.fname = form.fname.data
+        current_user.lname = form.lname.data
+        current_user.brokerage = form.brokerage.data
+        current_user.save()
+        flash(f'Updated Account!', 'success')
+        return redirect(url_for('account'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.fname.data = current_user.fname
+        form.lname.data = current_user.lname
+        form.brokerage.data = current_user.brokerage
+    return render_template('account.html', title='Account', form=form)
 
 # register route
 @app.route('/register', methods=['GET','POST'])
