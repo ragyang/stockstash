@@ -5,6 +5,9 @@ from stockstash.forms import RegistrationForm, LoginForm, AddStockForm, AddStock
 from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
 
+#DELETE
+from datetime import timedelta
+
 
 @app.route("/")
 def index():
@@ -84,7 +87,9 @@ def portfolio():
     for stock in user['portfolio']:
         tickers.append(stock['ticker'])
 
-    date = get_most_recent_business_day()
+    #DELETE DELTA
+    date = get_most_recent_business_day() - timedelta(days=4)
+
     stockdata = (get_stock_data(tickers, date, date))
     
     # Form to add stocks to portfolio
@@ -138,6 +143,7 @@ def watchlist():
 @app.route("/portfolio/<string:ticker_id>/delete", methods=['POST'])
 @login_required
 def delete_portfolio_ticker(ticker_id):
+    print(ticker_id)
     user = User.objects(username=current_user['username'])
     user.update_one(pull__portfolio__ticker = Portfolio(ticker=ticker_id).ticker)
     flash(ticker_id + ' has been deleted from your portfolio', 'success')
@@ -147,60 +153,11 @@ def delete_portfolio_ticker(ticker_id):
 @app.route("/watchlist/<string:ticker_id>/delete", methods=['POST'])
 @login_required
 def delete_watchlist_ticker(ticker_id):
+    print(ticker_id)
     user = User.objects(username=current_user['username'])
     user.update_one(pull__watchlist__ticker = Watchlist(ticker=ticker_id).ticker)
     flash(ticker_id + ' has been deleted from your watchlist', 'success')
     return redirect(url_for('watchlist'))
-
-# delete user
-@app.route("/admin/<string:username>/delete", methods=['POST'])
-@login_required
-def delete_user(username):
-    user = User.objects(username=username)
-    # logout and delete if current user is deleting self
-    if username == current_user['username']:
-        logout_user()
-        flash( username + ' has been deleted from the system.  Admin is no longer active', 'success')
-        user.delete()
-        return redirect('login')
-    user.delete()
-    flash( username + ' has been deleted from the system', 'success')
-    return redirect(url_for('admin_panel'))
-
-# assign admin role
-@app.route("/admin/<string:username>/assign", methods=['POST'])
-@login_required
-def assign_admin(username):
-    user = User.objects(username=username)
-    user.update_one(set__admin = True)
-    flash( username + ' has been assigned admin privledges', 'success')
-    return redirect(url_for('admin_panel'))
-
-# remove admin role
-@app.route("/admin/<string:username>/remove", methods=['POST'])
-@login_required
-def remove_admin(username):
-    redirect_url = 'admin_panel'
-
-    # logout user if removing admin privledges and set redirect to login
-    if username == current_user['username']:
-        logout_user()
-        redirect_url = 'login'
-    user = User.objects(username=username)
-    user.update_one(set__admin = False)
-    flash( username + ' admin privledges removed', 'success')
-    return redirect(url_for(redirect_url))
-
-# admin_panel
-@app.route('/admin', methods=['GET', 'POST'])
-@login_required
-def admin_panel():
-    #user count
-    users = User.objects
-    num_users = users.count()
-
-    json_users = users.to_json()
-    return render_template('admin.html', title='Admin Panel', data=users)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

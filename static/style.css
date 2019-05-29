@@ -1,0 +1,25 @@
+body {
+  background: #fafafa;
+  color: #474747;
+  margin-top: 5rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #3d3d3d;
+}
+
+.bg-example {
+  background-color: #3186be;
+}
+
+.site-header .navbar-nav .nav-link {
+  color: #cbd5db;
+}
+
+.site-header .navbar-nav .nav-link:hover {
+  color: #ffffff;
+}
+
+.site-header .navbar-nav .nav-link.active {
+  font-weight: 400;
+}

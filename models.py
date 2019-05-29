@@ -29,6 +29,5 @@ class User(mongo.Document, UserMixin):
     fname = mongo.StringField(required=True)
     lname = mongo.StringField(required=True)
     brokerage = mongo.StringField()
-    admin = mongo.BooleanField(default=False)
     portfolio = mongo.EmbeddedDocumentListField(Portfolio)
     watchlist = mongo.EmbeddedDocumentListField(Watchlist)
