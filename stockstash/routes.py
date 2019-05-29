@@ -1,9 +1,13 @@
-from flask import Flask, jsonify, render_template, url_for, flash, redirect
+from flask import Flask, jsonify, render_template, url_for, flash, redirect, request
 from stockstash import app, mongo, bcrypt
 from stockstash.models import User, Portfolio, Watchlist
-from stockstash.forms import RegistrationForm, LoginForm, AddStockForm, AddStockFormWatchlist
+from stockstash.forms import RegistrationForm, LoginForm, AddStockForm, AddStockFormWatchlist, AccountForm
 from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
+
+#DELETE
+from datetime import timedelta
+
 
 @app.route("/")
 def index():
@@ -17,13 +21,34 @@ def login():
         return redirect(url_for('portfolio'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.objects.get(pk=form.username.data)
+        user = User.objects.get(username=form.username.data)
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             return redirect(url_for('portfolio'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
+
+# account route
+@app.route('/account', methods=['GET','POST'])
+@login_required
+def account():
+    form = AccountForm()
+
+    if form.validate_on_submit():
+        current_user.username = form.username.data
+        current_user.fname = form.fname.data
+        current_user.lname = form.lname.data
+        current_user.brokerage = form.brokerage.data
+        current_user.save()
+        flash(f'Updated Account!', 'success')
+        return redirect(url_for('account'))
+    elif request.method == 'GET':
+        form.username.data = current_user.username
+        form.fname.data = current_user.fname
+        form.lname.data = current_user.lname
+        form.brokerage.data = current_user.brokerage
+    return render_template('account.html', title='Account', form=form)
 
 # register route
 @app.route('/register', methods=['GET','POST'])
@@ -35,9 +60,9 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(_id=form.username.data,password=hashed_pass,
+        user = User(username=form.username.data,password=hashed_pass,
                     fname=form.fname.data, lname=form.lname.data,
-                    brokerage=form.brokerage.data, portfolio=Portfolio())
+                    brokerage=form.brokerage.data, portfolio=[], watchlist=[])
         user.save()
         flash(f'Welcome to StockStash {form.fname.data}! '
               f'\nPlease login with your new account.', 'success')
@@ -58,18 +83,21 @@ def portfolio():
 
     # Get the stock data from the current users portfolio
     tickers = []
-    user = User.objects.get(pk=current_user['_id'])
+    user = User.objects.get(username=current_user['username'])
     for stock in user['portfolio']:
         tickers.append(stock['ticker'])
-    date = get_most_recent_business_day()
+
+    #DELETE DELTA
+    date = get_most_recent_business_day() - timedelta(days=4)
+
     stockdata = (get_stock_data(tickers, date, date))
     
     # Form to add stocks to portfolio
     form = AddStockForm()
-    user = User.objects.get(pk=current_user['_id'])
+    user = User.objects.get(username=current_user['username'])
     if form.validate_on_submit():
         new_stock = Portfolio(ticker=form.ticker.data, price=form.price.data)
-        user = User.objects.get(pk=current_user['_id'])
+        user = User.objects.get(username=current_user['username'])
         user.portfolio.append(new_stock)
         user.save()
         flash(f'New stock added!', 'success')
@@ -84,7 +112,7 @@ def watchlist():
 
     # Get the stock data from api
     tickers = []
-    user = User.objects.get(pk=current_user['_id'])
+    user = User.objects.get(username=current_user['username'])
     for stock in user['watchlist']:
         tickers.append(stock['ticker'])
     date = get_most_recent_business_day()
@@ -100,10 +128,10 @@ def watchlist():
 
     # Form to add stocks to portfolio
     form = AddStockFormWatchlist()
-    user = User.objects.get(pk=current_user['_id'])
+    user = User.objects.get(username=current_user['username'])
     if form.validate_on_submit():
         new_stock = Watchlist(ticker=form.ticker.data, lowprice=form.lowprice.data, highprice=form.highprice.data)
-        user = User.objects.get(pk=current_user['_id'])
+        user = User.objects.get(username=current_user['username'])
         user.watchlist.append(new_stock)
         user.save()
         flash(f'New stock added!', 'success')
@@ -116,7 +144,7 @@ def watchlist():
 @login_required
 def delete_portfolio_ticker(ticker_id):
     print(ticker_id)
-    user = User.objects(pk=current_user['_id'])
+    user = User.objects(username=current_user['username'])
     user.update_one(pull__portfolio__ticker = Portfolio(ticker=ticker_id).ticker)
     flash(ticker_id + ' has been deleted from your portfolio', 'success')
     return redirect(url_for('portfolio'))
@@ -126,9 +154,10 @@ def delete_portfolio_ticker(ticker_id):
 @login_required
 def delete_watchlist_ticker(ticker_id):
     print(ticker_id)
-    user = User.objects(pk=current_user['_id'])
+    user = User.objects(username=current_user['username'])
     user.update_one(pull__watchlist__ticker = Watchlist(ticker=ticker_id).ticker)
     flash(ticker_id + ' has been deleted from your watchlist', 'success')
     return redirect(url_for('watchlist'))
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

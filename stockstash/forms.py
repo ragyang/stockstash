@@ -23,10 +23,29 @@ class RegistrationForm(FlaskForm):
     # validates the username is unique
     def validate_username(self, username):
         try:
-            user = User.objects.get(pk=username.data)
+            user = User.objects.get(username=username.data)
         except User.DoesNotExist:
             user = None
         if user:
+            raise ValidationError('Username taken! Please try another...')
+
+# account form
+class AccountForm(FlaskForm):
+    username = StringField('Email',
+                           validators=[DataRequired(),Length(min=2, max=20), Email()])
+    fname = StringField('First Name', validators=[Length(min=1, max=100)])
+    lname = StringField('Last Name', validators=[Length(min=1, max=100)])
+    brokerage = StringField('Brokerage')
+    submit = SubmitField('Update')
+
+    # validates the username is unique
+    def validate_username(self, username):
+        try:
+            user = User.objects.get(username=username.data)
+            print(user.username)
+        except User.DoesNotExist:
+            user = None
+        if user and (user.username != username.data):
             raise ValidationError('Username taken! Please try another...')
 
 # login form
@@ -36,6 +55,14 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember = BooleanField('Remember Me')
     submit = SubmitField('Login')
+
+    # validates the username is unique
+    def validate_username(self, username):
+        try:
+            user = User.objects.get(username=username.data)
+        except User.DoesNotExist:
+            user = None
+            raise ValidationError('Email does not exist')
 
 # ticker form
 class AddStockForm(FlaskForm):
