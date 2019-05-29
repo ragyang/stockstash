@@ -8,7 +8,7 @@ from stockstash.api.alphavantage import is_valid_ticker
 # registration form
 class RegistrationForm(FlaskForm):
     username = StringField('Email',
-                           validators=[DataRequired(),Length(min=2, max=20), Email()])
+                           validators=[DataRequired(),Length(min=2, max=320), Email()])
     fname = StringField('First Name',
                             validators=[DataRequired(), Length(min=1, max=100)])
     lname = StringField('Last Name',
@@ -32,7 +32,7 @@ class RegistrationForm(FlaskForm):
 # account form
 class AccountForm(FlaskForm):
     username = StringField('Email',
-                           validators=[DataRequired(),Length(min=2, max=20), Email()])
+                           validators=[DataRequired(),Length(min=2, max=320), Email()])
     fname = StringField('First Name', validators=[Length(min=1, max=100)])
     lname = StringField('Last Name', validators=[Length(min=1, max=100)])
     brokerage = StringField('Brokerage')
@@ -90,3 +90,24 @@ class AddStockFormWatchlist(FlaskForm):
     def validate_ticker(self, ticker):
         if not is_valid_ticker(ticker.data):
             raise ValidationError('Error! Not a valid ticker.')
+
+class RequestResetForm(FlaskForm):
+    username = StringField('Email',
+                           validators=[DataRequired(),Length(min=2, max=320), Email()])
+    submit = SubmitField('Request Password Reset')
+
+    # validates that the username exists 
+    def validate_username(self, username):
+        try:
+            user = User.objects.get(username=username.data)
+        except User.DoesNotExist:
+            user = None
+        if user is None:
+            raise ValidationError('There is no account with that email.')
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password',
+                             validators=[DataRequired(), Length(min=6, max=320)])
+    confirm_password = PasswordField('Confirm Password',
+                                     validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Reset Password')
