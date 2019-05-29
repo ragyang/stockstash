@@ -1,11 +1,12 @@
 from flask import Flask, jsonify, render_template, url_for, flash, redirect, request
-from stockstash import app, mongo, bcrypt, mail
+from stockstash import app, mongo, bcrypt
 from stockstash.models import User, Portfolio, Watchlist
-from stockstash.forms import (RegistrationForm, LoginForm, AddStockForm, AddStockFormWatchlist, 
-                                AccountForm, RequestResetForm, ResetPasswordForm)
+from stockstash.forms import RegistrationForm, LoginForm, AddStockForm, AddStockFormWatchlist, AccountForm
 from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
-from flask_mail import Message
+
+#DELETE
+from datetime import timedelta
 
 
 @app.route("/")
@@ -86,7 +87,9 @@ def portfolio():
     for stock in user['portfolio']:
         tickers.append(stock['ticker'])
 
-    date = get_most_recent_business_day()
+    #DELETE DELTA
+    date = get_most_recent_business_day() - timedelta(days=4)
+
     stockdata = (get_stock_data(tickers, date, date))
     
     # Form to add stocks to portfolio
@@ -140,6 +143,7 @@ def watchlist():
 @app.route("/portfolio/<string:ticker_id>/delete", methods=['POST'])
 @login_required
 def delete_portfolio_ticker(ticker_id):
+    print(ticker_id)
     user = User.objects(username=current_user['username'])
     user.update_one(pull__portfolio__ticker = Portfolio(ticker=ticker_id).ticker)
     flash(ticker_id + ' has been deleted from your portfolio', 'success')
@@ -149,104 +153,11 @@ def delete_portfolio_ticker(ticker_id):
 @app.route("/watchlist/<string:ticker_id>/delete", methods=['POST'])
 @login_required
 def delete_watchlist_ticker(ticker_id):
+    print(ticker_id)
     user = User.objects(username=current_user['username'])
     user.update_one(pull__watchlist__ticker = Watchlist(ticker=ticker_id).ticker)
     flash(ticker_id + ' has been deleted from your watchlist', 'success')
     return redirect(url_for('watchlist'))
-
-# delete user
-@app.route("/admin/<string:username>/delete", methods=['POST'])
-@login_required
-def delete_user(username):
-    user = User.objects(username=username)
-    # logout and delete if current user is deleting self
-    if username == current_user['username']:
-        logout_user()
-        flash( username + ' has been deleted from the system.  Admin is no longer active', 'success')
-        user.delete()
-        return redirect('login')
-    user.delete()
-    flash( username + ' has been deleted from the system', 'success')
-    return redirect(url_for('admin_panel'))
-
-# assign admin role
-@app.route("/admin/<string:username>/assign", methods=['POST'])
-@login_required
-def assign_admin(username):
-    user = User.objects(username=username)
-    user.update_one(set__admin = True)
-    flash( username + ' has been assigned admin privledges', 'success')
-    return redirect(url_for('admin_panel'))
-
-# remove admin role
-@app.route("/admin/<string:username>/remove", methods=['POST'])
-@login_required
-def remove_admin(username):
-    redirect_url = 'admin_panel'
-
-    # logout user if removing admin privledges and set redirect to login
-    if username == current_user['username']:
-        logout_user()
-        redirect_url = 'login'
-    user = User.objects(username=username)
-    user.update_one(set__admin = False)
-    flash( username + ' admin privledges removed', 'success')
-    return redirect(url_for(redirect_url))
-
-# admin_panel
-@app.route('/admin', methods=['GET', 'POST'])
-@login_required
-def admin_panel():
-    #user count
-    users = User.objects
-    num_users = users.count()
-
-    json_users = users.to_json()
-    return render_template('admin.html', title='Admin Panel', data=users)
-
-def send_reset_email(user):
-    token = user.get_reset_token()
-    msg = Message('stockstash - Password Reset Request', 
-                    sender='stockstash.info@gmail.com', 
-                    recipients=[user.username])
-    msg.body = f'''To reset your password, visit the following link:
-{url_for('reset_token', token=token, _external=True)}
-
-If you did not make this request then simply ignore this email and no changes will be made.
-'''
-    mail.send(msg)
-
-
-# request to reset password
-@app.route('/reset_password', methods=['GET','POST'])
-def reset_request():
-    if current_user.is_authenticated:
-        return redirect(url_for('portfolio'))
-    form = RequestResetForm()
-    if form.validate_on_submit():
-        user = User.objects.get(username=form.username.data)
-        send_reset_email(user)
-        flash('An email has been sent with instructions to reset your password.', 'info')
-        return redirect(url_for('login'))
-    return render_template('reset_request.html', title='Reset Password', form=form)
-
-# reset password
-@app.route('/reset_password/<token>', methods=['GET','POST'])
-def reset_token(token):
-    if current_user.is_authenticated:
-        return redirect(url_for('portfolio'))
-    user = User.verify_reset_token(token)
-    if user is None:
-        flash('That is an invalid or expired token', 'warning')
-        return redirect(url_for('reset_request'))
-    form = ResetPasswordForm()
-    if form.validate_on_submit():
-        hashed_pass = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user.password = hashed_pass
-        user.save()
-        flash('Your password has been updated! You are now able to log in.', 'info')
-        return redirect(url_for('login'))
-    return render_template('reset_token.html', title='Reset Password', form=form)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True)

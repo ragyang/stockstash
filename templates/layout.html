@@ -41,10 +41,6 @@
                   <a class="nav-item nav-link" href="{{ url_for('portfolio') }}">Portfolio</a>
                   <a class="nav-item nav-link" href="{{ url_for('watchlist') }}">Watchlist</a>
                   <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-
-                  {% if current_user.admin %}
-                  <a class="nav-item nav-link" href="{{ url_for('admin_panel') }}">Admin Panel</a>
-                  {% endif %}
               <!-- ELSE curr_user is not authenticated, show login, register -->
                 {% else %}
                   <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>

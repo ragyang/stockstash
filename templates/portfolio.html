@@ -20,37 +20,22 @@
                         {{ form.ticker(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
-            </fieldset>
 
             <fieldset class="form-group">
-                    <!-- low price -->
+                    <!-- price bought -->
                     <div class="form-group">
-                        {{ form.lowprice.label(class="form-control-label") }}
-                        {% if form.lowprice.errors %}
-                        {{ form.lowprice(class="form-control form-control-lg is-invalid") }}
+                        {{ form.price.label(class="form-control-label") }}
+                        {% if form.price.errors %}
+                        {{ form.price(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
-                                {% for error in form.lowprice.errors %}
+                                {% for error in form.price.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.lowprice(class="form-control form-control-lg") }}
+                            {{ form.price(class="form-control form-control-lg") }}
                         {% endif %}
-                    </div>
-                    <!-- high price -->
-                    <div class="form-group">
-                        {{ form.highprice.label(class="form-control-label") }}
-                        {% if form.highprice.errors %}
-                        {{ form.highprice(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.highprice.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
-                        {% else %}
-                            {{ form.highprice(class="form-control form-control-lg") }}
-                        {% endif %}
-                    </div>             
+                    </div>        
             </fieldset>
 
             <div class="form-group">
@@ -59,21 +44,14 @@
         </form>
 
 
-        <!-- Display Stock Api Data -->
-        {% for key, value in apidata.items() %}
-            <h3>{{key}}</h1>
-            <h5>{{value}}</h2>
-        {% endfor %}
-
-        <!-- Display Stock Db Data -->
-        <!-- Display Stock Api Data -->
-        {% for key, value in dbdata.items() %}
+        <!-- Display Stock Data -->
+        {% for key, value in data.items() %}
             <h3>{{key}}</h1>
             <h5>{{value}}</h2>
 
-            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal{{key}}">Remove Stock</button>
+                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Remove Stock</button>
                 <!-- Modal -->
-            <div class="modal fade" id="deleteModal{{key}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -83,23 +61,24 @@
                     </button>
                     </div>
                     <div class="modal-body">
-                    Are you sure you want to remove {{key}} from your watchlist?
+                    Are you sure you want to remove {{key}} from your portfolio?
                     </div>
                     <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <form action="{{ url_for('delete_watchlist_ticker', ticker_id=key) }}" method="POST">
+                    <form action="{{ url_for('delete_portfolio_ticker', ticker_id=key) }}" method="POST">
                         <input type="submit" class="btn btn-danger" value="Delete">
                     </form>
                     </div>
                 </div>
                 </div>
             </div>
-
+            
         {% endfor %}
+
     </div>
     <div class="border-top pt-4">
         <small class="text-muted">
-            stockstash
+            Stockstash
         </small>
     </div>
 {% endblock content %}
