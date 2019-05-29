@@ -15,3 +15,7 @@ flask_mongoengine
 flask_login
 
 flask_bcrypt
+
+flask_mail
+
+itsdangerous
