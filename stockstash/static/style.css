@@ -1,25 +1,43 @@
 body {
-  background: #fafafa;
+  background: #f5f6f8;
   color: #474747;
   margin-top: 5rem;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: #3d3d3d;
+h1,h2,h3,h4,h5,h6{
+  font-family:Roboto, sans-serif;
 }
 
+p{
+  font-family:Roboto, sans-serif;
+}
+
+
 .bg-example {
-  background-color: #3186be;
+  background-color: #171d25;
 }
 
 .site-header .navbar-nav .nav-link {
   color: #cbd5db;
+  font-family:Roboto, sans-serif;
 }
 
 .site-header .navbar-nav .nav-link:hover {
   color: #ffffff;
+  
 }
 
 .site-header .navbar-nav .nav-link.active {
   font-weight: 400;
+  
+}
+
+.navbar-default{
+  color: #cbd5db; 
+}
+.navbar-custom .navbar-brand{
+  color: #cbd5db;
+}
+.navbar-custom {
+  background-color:  #171d25;
 }
