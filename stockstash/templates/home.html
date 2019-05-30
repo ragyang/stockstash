@@ -1,6 +1,21 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="content-section">
-       <h1>StockStash Landing Page</h1>
+<section id="showcase">
+    <!-- Jumbotron-->
+    <div class="container-fluid">
+        <div class="row jumbotron">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                <img class="slowreveal" src="{{ url_for('static',filename='img/money-bag.png') }}">
+                <h1 class="slowreveal">stockstash</h1>
+                <hr class="slowreveal">
+                <p class="lead slowreveal">Empowering investors with the information they need to achieve their personal financial goals.</p>
+                <a class="btn btn-warning slowrevealdelay" href="{{ url_for('register') }}" role="button">Get Started</a>
+            </div>
+        </div>
     </div>
+</section>
+
+<footer>
+   <p>&copy; Christopher Ragasa and Derek Yang, 2019</p>
+</footer>
 {% endblock content %}
