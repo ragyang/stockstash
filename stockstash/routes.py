@@ -6,7 +6,7 @@ from stockstash.forms import (RegistrationForm, LoginForm, AddStockForm, AddStoc
 from flask_login import login_user, current_user, logout_user, login_required
 from stockstash.data.stockreader import get_stock_data, get_most_recent_business_day
 from flask_mail import Message
-
+import json
 
 @app.route("/")
 def index():
@@ -79,16 +79,22 @@ def logout():
 @app.route('/portfolio', methods=['GET', 'POST'])
 @login_required
 def portfolio():
-
+    counter = 0
     # Get the stock data from the current users portfolio
     tickers = []
+    price_bought = []
     user = User.objects.get(username=current_user['username'])
     for stock in user['portfolio']:
         tickers.append(stock['ticker'])
+        price_bought.append(stock['price'])
 
     date = get_most_recent_business_day()
     stockdata = (get_stock_data(tickers, date, date))
-    
+
+    for key in stockdata:
+        stockdata[key]['price_bought'] = [price_bought[counter]]
+        counter = counter + 1
+
     # Form to add stocks to portfolio
     form = AddStockForm()
     user = User.objects.get(username=current_user['username'])

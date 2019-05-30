@@ -50,5 +50,5 @@ def get_stock_data(tickers, start_date, end_date):
    for ticker in tickers:
       # covert the dataframe to a dict
       res[ticker] = web.DataReader(ticker,'yahoo', start_date, end_date).head(1).to_dict('list')
-   
+      
    return res
