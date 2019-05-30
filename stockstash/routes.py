@@ -92,7 +92,7 @@ def portfolio():
     stockdata = (get_stock_data(tickers, date, date))
 
     for key in stockdata:
-        stockdata[key]['price_bought'] = [price_bought[counter]]
+        stockdata[key]['price_bought'] = price_bought[counter]
         counter = counter + 1
 
     # Form to add stocks to portfolio
@@ -112,22 +112,26 @@ def portfolio():
 @app.route('/watchlist', methods=['GET', 'POST'])
 @login_required
 def watchlist():
+    counter = 0
+    low_price = []
+    high_price = []
+    tickers = []
 
     # Get the stock data from api
-    tickers = []
     user = User.objects.get(username=current_user['username'])
+
     for stock in user['watchlist']:
         tickers.append(stock['ticker'])
-    date = get_most_recent_business_day()
-    apidata = (get_stock_data(tickers, date, date))
+        low_price.append(stock['lowprice'])
+        high_price.append(stock['highprice'])
 
-    # Get the stock data from database
-    dbdata = {}
-    for stock in user['watchlist']:
-        dbdata[stock['ticker']] = {
-            'High Price': float(stock['highprice']),
-            'Low Price': float(stock['lowprice'])
-        }
+    date = get_most_recent_business_day()
+    stockdata = (get_stock_data(tickers, date, date))
+
+    for key in stockdata:
+        stockdata[key]['lowprice'] = low_price[counter]
+        stockdata[key]['highprice'] = high_price[counter]
+        counter = counter + 1
 
     # Form to add stocks to portfolio
     form = AddStockFormWatchlist()
@@ -140,7 +144,7 @@ def watchlist():
         flash(f'New stock added!', 'success')
         return redirect(url_for('watchlist'))
 
-    return render_template('watchlist.html', title='Watchlist', apidata=apidata,  dbdata=dbdata, form=form)
+    return render_template('watchlist.html', title='Watchlist', data=stockdata, form=form)
 
 # delete from portfolio
 @app.route("/portfolio/<string:ticker_id>/delete", methods=['POST'])
