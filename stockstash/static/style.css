@@ -12,6 +12,14 @@ p{
   font-family:Roboto, sans-serif;
 }
 
+.slowreveal {
+  visibility: hidden
+}
+
+.slowrevealdelay {
+  visibility: hidden
+}
+
 
 .bg-example {
   background-color: #171d25;
@@ -40,4 +48,17 @@ p{
 }
 .navbar-custom {
   background-color:  #171d25;
+}
+
+footer {
+  text-align: center;
+}
+#showcase {
+  text-align: center;
+  padding: 30px 0 30px 0;
+}
+
+#showcase img{
+  width: 15%;
+  height: auto;
 }

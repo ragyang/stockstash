@@ -12,7 +12,7 @@
                     {{ form.username.label(class="form-control-label") }}
 
                     {% if form.username.errors %}
-                        {{ form.username(class="form-control form-control-lg is-invalid") }}
+                        {{ form.username(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
 
                         <!-- Warn invalid response-->
                         <div class="invalid-feedback">
@@ -22,7 +22,7 @@
                         </div>
                     {% else %}
                     <!-- Reference: https://getbootstrap.com/docs/4.0/components/forms/ -->
-                        {{ form.username(class="form-control form-control-lg") }}
+                        {{ form.username(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
                     {% endif %}
                 </div>  
 
@@ -30,14 +30,14 @@
                 <div class="form-group">
                     {{ form.fname.label(class="form-control-label") }}
                     {% if form.fname.errors %}
-                        {{ form.fname(class="form-control form-control-lg is-invalid") }}
+                        {{ form.fname(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.fname.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.fname(class="form-control form-control-lg") }}
+                        {{ form.fname(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
                     {% endif %}
                 </div>     
 
@@ -45,14 +45,14 @@
                 <div class="form-group">
                     {{ form.lname.label(class="form-control-label") }}
                     {% if form.lname.errors %}
-                        {{ form.lname(class="form-control form-control-lg is-invalid") }}
+                        {{ form.lname(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.lname.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.lname(class="form-control form-control-lg") }}
+                        {{ form.lname(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
                     {% endif %}
                 </div>    
 
@@ -60,14 +60,14 @@
                 <div class="form-group">
                     {{ form.brokerage.label(class="form-control-label") }}
                     {% if form.brokerage.errors %}
-                        {{ form.brokerage(class="form-control form-control-lg is-invalid") }}
+                        {{ form.brokerage(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.brokerage.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.brokerage(class="form-control form-control-lg") }}
+                        {{ form.brokerage(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
                     {% endif %}
                 </div>
  

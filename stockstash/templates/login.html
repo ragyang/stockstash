@@ -12,14 +12,14 @@
                 <div class="form-group">
                     {{ form.username.label(class="form-control-label") }}
                     {% if form.username.errors %}
-                    {{ form.username(class="form-control form-control-lg is-invalid") }}
+                    {{ form.username(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.username.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.username(class="form-control form-control-lg") }}
+                        {{ form.username(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
                     {% endif %}
                 </div>
 
@@ -27,14 +27,14 @@
                 <div class="form-group">
                     {{ form.password.label(class="form-control-label") }}
                     {% if form.password.errors %}
-                        {{ form.password(class="form-control form-control-lg is-invalid") }}
+                        {{ form.password(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.password.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.password(class="form-control form-control-lg") }}
+                        {{ form.password(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
                     {% endif %}
                 </div>      
 
@@ -52,9 +52,9 @@
             </div> 
         </form>
     </div>
-    <div class="border-top pt-4">
+    <div class="border-top pt-4 pb-4">
         <small class="text-muted">
-            Need An Account <a class="ml-3" href="{{ url_for('register') }}">Sign Up Now</a>
+            Need An Account? <a class="ml-3" href="{{ url_for('register') }}">Sign Up Now</a>
         </small>
     </div>
 {% endblock content %}
