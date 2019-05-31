@@ -76,3 +76,11 @@ footer {
   width: 15%;
   height: auto;
 }
+
+.right-green {
+  border-right: 20px solid #abdca7;
+}
+
+.right-red {
+  border-right: 20px solid #ff6961;
+}
