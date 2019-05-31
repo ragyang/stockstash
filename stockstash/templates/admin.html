@@ -4,9 +4,9 @@
 
 
         <!-- Display User Data -->
-        <h3>Users</h1>
+        <h1>Users</h1>
         {% for user in data %}
-            <h5>{{user.username}}</h2>
+            <h5>Username: {{user.username}}</h2>
                 {% if user.admin %}
                 <h5>Role: Admin</h5>
                 <!-- Remove Admin Modal Button -->
@@ -61,6 +61,12 @@
                     </div>
                 {% endif %}
                 <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target='#deleteModal{{user.id}}'>Delete User</button>
+
+                <form style="display: inline-block;" action="{{ url_for('login_as', username=user.username) }}" method="POST">
+                    <input type="submit" class="btn btn-warning btn-sm m-1" value="Login As">
+                </form>
+
+                <hr align="left" width="30%">
 
                 <!-- Delete User Modal -->
                 <div class="modal fade" id="deleteModal{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">

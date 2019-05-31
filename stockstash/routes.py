@@ -203,6 +203,26 @@ def remove_admin(username):
     flash( username + ' admin privledges removed', 'success')
     return redirect(url_for(redirect_url))
 
+
+# login as
+@app.route("/admin/<string:username>/loginas", methods=['POST'])
+@login_required
+def login_as(username):
+    redirect_url = 'admin_panel'
+
+    # if current user is not an admin, log them out and redirect to login
+    print(dir(current_user))
+    if not current_user.admin:
+        logout_user()
+        flash('You are not an admin role.', 'danger')
+        return redirect(url_for('login'))
+
+    # switch to user
+    user = User.objects.get(username=username)
+    login_user(user, remember=username)
+    flash('Logged in as '+username, 'success')
+    return redirect(url_for('portfolio'))
+
 # admin_panel
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
