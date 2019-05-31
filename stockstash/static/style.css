@@ -84,3 +84,7 @@ footer {
 .right-red {
   border-right: 20px solid #ff6961;
 }
+
+.right-neutral {
+  border-right: 20px solid #171d25;
+}

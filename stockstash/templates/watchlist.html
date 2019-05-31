@@ -5,7 +5,7 @@
 
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-3"> Add Stock: </legend>
+                <legend class="border-bottom mb-3"> Add Stock to Watchlist: </legend>
                 <!-- ticker input -->
                 <div class="form-group">
                     {{ form.ticker.label(class="form-control-label") }}
@@ -65,7 +65,15 @@
     
                     <div class ="hover-card">
                         <div class="card">
-                            <div class="card-body">
+
+                            {% if ( value.lowprice > value.High[0]) %}
+                                <div class="card-body right-red">
+                            {% elif ( value.highprice < value.High[0]) %}
+                                <div class="card-body right-green">
+                            {% else %}
+
+                            <div class="card-body right-neutral">
+                            {%  endif %}
                                 <h4 class="card-title">{{key.upper()}}</h4>
                                 <p class="card-text">
                                     Current High: {{value.High[0]}}
@@ -104,8 +112,8 @@
         {% endfor %}
     </div>
     <div class="border-top pt-4 pb-4">
-        <small class="text-muted">
-            stockstash
-        </small>
-    </div>
+            <small class="text-muted">
+                stockstash
+            </small>
+        </div>
 {% endblock content %}

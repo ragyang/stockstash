@@ -92,7 +92,7 @@ def portfolio():
     stockdata = (get_stock_data(tickers, date, date))
 
     for key in stockdata:
-        stockdata[key]['price_bought'] = price_bought[counter]
+        stockdata[key]['price_bought'] = float(price_bought[counter])
         counter = counter + 1
 
     # Form to add stocks to portfolio
@@ -129,8 +129,8 @@ def watchlist():
     stockdata = (get_stock_data(tickers, date, date))
 
     for key in stockdata:
-        stockdata[key]['lowprice'] = low_price[counter]
-        stockdata[key]['highprice'] = high_price[counter]
+        stockdata[key]['lowprice'] = float(low_price[counter])
+        stockdata[key]['highprice'] = float(high_price[counter])
         counter = counter + 1
 
     # Form to add stocks to portfolio
