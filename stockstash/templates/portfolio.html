@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
+
+
+
+
     <div class="content-section">
         <form method="POST" action="" novalidate="novalidate">
 
@@ -10,14 +14,14 @@
                 <div class="form-group">
                     {{ form.ticker.label(class="form-control-label") }}
                     {% if form.ticker.errors %}
-                    {{ form.ticker(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
+                    {{ form.ticker(class="form-control form-control-sm is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.ticker.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.ticker(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
+                        {{ form.ticker(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-4 col-lg-4") }}
                     {% endif %}
                 </div>
 
@@ -26,14 +30,14 @@
                     <div class="form-group">
                         {{ form.price.label(class="form-control-label") }}
                         {% if form.price.errors %}
-                        {{ form.price(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
+                        {{ form.price(class="form-control form-control-sm is-invalid") }}
                             <div class="invalid-feedback">
                                 {% for error in form.price.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.price(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
+                            {{ form.price(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-4 col-lg-4") }}
                         {% endif %}
                     </div>        
             </fieldset>
@@ -45,11 +49,23 @@
 
 
         <!-- Display Stock Data -->
+    <div class="card-columns">
         {% for key, value in data.items() %}
-            <h3>{{key}}</h1>
-            <h5>{{value}}</h2>
 
-                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal{{key}}">Remove Stock</button>
+                <div class ="hover-card">
+                    <div class="card">
+                        <div class="card-body right-green">
+                            <h4 class="card-title">{{key.upper()}}</h4>
+                            <p class="card-text">
+                                Current High: {{value.High[0]}}
+                                <br> Current Low: {{value.Low[0]}}
+                                <br> Price Bought: {{value.price_bought}}
+                            </p>
+                            <button type="button" class="btn btn-outline-warning btn-sm m-1" data-toggle="modal" data-target="#deleteModal{{key}}">Remove Stock</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Modal -->
             <div class="modal fade" id="deleteModal{{key}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -74,11 +90,14 @@
             </div>
             
         {% endfor %}
-
     </div>
-    <div class="border-top pt-4 pb-4">
+    </div>
+
+
+    <div class="border-top pt-4">
         <small class="text-muted">
             stockstash
         </small>
     </div>
+    
 {% endblock content %}

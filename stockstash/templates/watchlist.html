@@ -59,19 +59,25 @@
         </form>
 
 
-        <!-- Display Stock Api Data -->
-        {% for key, value in apidata.items() %}
-            <h3>{{key}}</h1>
-            <h5>{{value}}</h2>
-        {% endfor %}
+        <!-- Display Stock Data -->
+        <div class="card-columns">
+            {% for key, value in data.items() %}
+    
+                    <div class ="hover-card">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4 class="card-title">{{key.upper()}}</h4>
+                                <p class="card-text">
+                                    Current High: {{value.High[0]}}
+                                    <br> Current Low: {{value.Low[0]}}
+                                    <br> Low Value Alert: {{value.lowprice}}
+                                    <br> High Value Alert: {{value.highprice}}
+                                </p>
+                                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal{{key}}">Remove Stock</button>
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- Display Stock Db Data -->
-        <!-- Display Stock Api Data -->
-        {% for key, value in dbdata.items() %}
-            <h3>{{key}}</h1>
-            <h5>{{value}}</h2>
-
-            <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal{{key}}">Remove Stock</button>
                 <!-- Modal -->
             <div class="modal fade" id="deleteModal{{key}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
