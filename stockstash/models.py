@@ -18,6 +18,7 @@ class Portfolio(mongo.EmbeddedDocument):
     ticker = mongo.StringField()
     price = mongo.StringField()
     date = mongo.StringField()
+    quantity = mongo.IntField()
 
 class Watchlist(mongo.EmbeddedDocument):
     ticker = mongo.StringField()

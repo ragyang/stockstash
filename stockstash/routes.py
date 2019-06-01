@@ -83,23 +83,28 @@ def portfolio():
     # Get the stock data from the current users portfolio
     tickers = []
     price_bought = []
+    quantity_bought = []
+
     user = User.objects.get(username=current_user['username'])
     for stock in user['portfolio']:
         tickers.append(stock['ticker'])
         price_bought.append(stock['price'])
+        quantity_bought.append(stock['quantity'])
+        print(stock['quantity'])
 
     date = get_most_recent_business_day()
     stockdata = (get_stock_data(tickers, date, date))
 
     for key in stockdata:
         stockdata[key]['price_bought'] = float(price_bought[counter])
+        stockdata[key]['quantity_bought'] = quantity_bought[counter]
         counter = counter + 1
 
     # Form to add stocks to portfolio
     form = AddStockForm()
     user = User.objects.get(username=current_user['username'])
     if form.validate_on_submit():
-        new_stock = Portfolio(ticker=form.ticker.data, price=form.price.data)
+        new_stock = Portfolio(ticker=form.ticker.data, price=form.price.data, quantity=form.quantity.data)
         user = User.objects.get(username=current_user['username'])
         user.portfolio.append(new_stock)
         user.save()
@@ -133,7 +138,7 @@ def watchlist():
         stockdata[key]['highprice'] = float(high_price[counter])
         counter = counter + 1
 
-    # Form to add stocks to portfolio
+    # Form to add stocks to watchlist
     form = AddStockFormWatchlist()
     user = User.objects.get(username=current_user['username'])
     if form.validate_on_submit():
