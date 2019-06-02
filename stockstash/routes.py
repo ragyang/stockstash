@@ -251,7 +251,7 @@ def admin_panel():
 def send_reset_email(user):
     token = user.get_reset_token()
     msg = Message('stockstash - Password Reset Request', 
-                    sender='stockstash.info@gmail.com', 
+                    sender='stockstash@outlook.com', 
                     recipients=[user.username])
     msg.body = f'''To reset your password, visit the following link:
 {url_for('reset_token', token=token, _external=True)}
