@@ -10,7 +10,7 @@ import json
 
 @app.route("/")
 def index():
-    return render_template('home.html', title='Stockstash')
+    return render_template('home.html', title='stockstash')
 
 # login route
 @app.route("/login", methods=['GET', 'POST'])
@@ -63,7 +63,7 @@ def register():
                     fname=form.fname.data, lname=form.lname.data,
                     brokerage=form.brokerage.data, portfolio=[], watchlist=[])
         user.save()
-        flash(f'Welcome to StockStash {form.fname.data}! '
+        flash(f'Welcome to stockstash {form.fname.data}! '
               f'\nPlease login with your new account.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
