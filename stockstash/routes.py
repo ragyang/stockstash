@@ -80,6 +80,8 @@ def logout():
 @login_required
 def portfolio():
     counter = 0
+    portfolio_value = 0
+    initial_portfolio_value = 0
     # Get the stock data from the current users portfolio
     tickers = []
     price_bought = []
@@ -90,20 +92,25 @@ def portfolio():
         tickers.append(stock['ticker'])
         price_bought.append(stock['price'])
         quantity_bought.append(stock['quantity'])
-        print(stock['quantity'])
 
     date = get_most_recent_business_day()
     stockdata = (get_stock_data(tickers, date, date))
 
+    # append data to one dict and get sum
     for key in stockdata:
         stockdata[key]['price_bought'] = float(price_bought[counter])
         stockdata[key]['quantity_bought'] = quantity_bought[counter]
+        initial_portfolio_value = initial_portfolio_value + (float(price_bought[counter]) * quantity_bought[counter])
+        portfolio_value = portfolio_value + (float(quantity_bought[counter]) * stockdata[key]['High'][0])
         counter = counter + 1
 
     # Form to add stocks to portfolio
     form = AddStockForm()
     user = User.objects.get(username=current_user['username'])
     if form.validate_on_submit():
+        if form.ticker.data in tickers:
+            flash(f'Stock is already in portfolio.  Please try again...', 'danger')
+            return redirect(url_for('portfolio'))
         new_stock = Portfolio(ticker=form.ticker.data, price=form.price.data, quantity=form.quantity.data)
         user = User.objects.get(username=current_user['username'])
         user.portfolio.append(new_stock)
@@ -111,7 +118,7 @@ def portfolio():
         flash(f'New stock added!', 'success')
         return redirect(url_for('portfolio'))
 
-    return render_template('portfolio.html', title='Portfolio', data=stockdata, form=form)
+    return render_template('portfolio.html', title='Portfolio', data=stockdata, portfolio_value=portfolio_value, initial_portfolio_value=initial_portfolio_value, form=form)
 
 # watchlist
 @app.route('/watchlist', methods=['GET', 'POST'])
@@ -142,6 +149,9 @@ def watchlist():
     form = AddStockFormWatchlist()
     user = User.objects.get(username=current_user['username'])
     if form.validate_on_submit():
+        if form.ticker.data in tickers:
+            flash(f'Stock is already in watchlist.  Please try again...', 'danger')
+            return redirect(url_for('watchlist'))
         new_stock = Watchlist(ticker=form.ticker.data, lowprice=form.lowprice.data, highprice=form.highprice.data)
         user = User.objects.get(username=current_user['username'])
         user.watchlist.append(new_stock)
