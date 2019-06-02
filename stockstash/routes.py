@@ -10,7 +10,7 @@ import json
 
 @app.route("/")
 def index():
-    return render_template('home.html')
+    return render_template('home.html', title='Stockstash')
 
 # login route
 @app.route("/login", methods=['GET', 'POST'])
@@ -63,7 +63,7 @@ def register():
                     fname=form.fname.data, lname=form.lname.data,
                     brokerage=form.brokerage.data, portfolio=[], watchlist=[])
         user.save()
-        flash(f'Welcome to stockstash {form.fname.data}! '
+        flash(f'Welcome to StockStash {form.fname.data}! '
               f'\nPlease login with your new account.', 'success')
         return redirect(url_for('login'))
     return render_template('register.html', title='Register', form=form)
@@ -251,7 +251,7 @@ def admin_panel():
 def send_reset_email(user):
     token = user.get_reset_token()
     msg = Message('stockstash - Password Reset Request', 
-                    sender='stockstash.info@gmail.com', 
+                    sender='stockstash@outlook.com', 
                     recipients=[user.username])
     msg.body = f'''To reset your password, visit the following link:
 {url_for('reset_token', token=token, _external=True)}

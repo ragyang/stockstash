@@ -14,11 +14,11 @@ app.config['MONGODB_SETTINGS'] = {
 app.config['SECRET_KEY'] = 'some_secret_here'
 
 # email config
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_SERVER'] = 'smtp-mail.outlook.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'stockstash.info@gmail.com'
-app.config['MAIL_PASSWORD'] = 'stocksarecool'
+app.config['MAIL_USERNAME'] = 'stockstash@outlook.com'
+app.config['MAIL_PASSWORD'] = 'Codingiscool'
 mail = Mail(app)
 
 # password hashing with bcrypt
