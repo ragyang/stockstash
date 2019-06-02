@@ -11,12 +11,10 @@ Run the following commands in the root project directory.
 ``` bash
 $ pip install -r requirements.txt
 $ python run.py
+NOTE: to run with Gunicorn WSGI Server, use the following command instead of $ python run.py
+$ ["gunicorn", "--config", "./stockstash/config/gunicorn_config.py", "stockstash:app"]
 ```
-#### Using Docker:
-```bash
-$ docker build -t stockstash .
-$ docker run -p 80:8000 stockstash
-```
+
 
 ### The Team
 Chris Ragasa:  [[LinkedIn](https://www.linkedin.com/in/cragasa/), [GitHub](https://github.com/chrisragasa)]
