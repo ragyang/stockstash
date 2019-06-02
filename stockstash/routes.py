@@ -128,7 +128,6 @@ def watchlist():
     low_price = []
     high_price = []
     tickers = []
-
     # Get the stock data from api
     user = User.objects.get(username=current_user['username'])
 
