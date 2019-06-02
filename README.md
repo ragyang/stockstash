@@ -1,7 +1,7 @@
 # stockstash
 > https://stockstash-prod.herokuapp.com/
 
-stockstash is a Flask application designed for the individual investor; the application gives users the ability to create a customizable stock portfolio and watchlist, empowering them with the information they need to achieve their financial goals.
+"stockstash" is a full featured Flask web application that empowers individual investors with the information they need to achieve their personal financial goals. Users are given the ability to create a customizable stock portfolio and watchlist to track both current and prospective holdings. The application uses RESTful Web Services to pull live/historical stock data.
 
 Technologies: Python, Flask, MongoDB, JavaScript, HTML, CSS, Alpha Vantage API
 
