@@ -10,7 +10,7 @@ import json
 
 @app.route("/")
 def index():
-    return render_template('home.html', title='stockstash')
+    return render_template('home.html')
 
 # login route
 @app.route("/login", methods=['GET', 'POST'])
