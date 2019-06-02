@@ -1,23 +1,24 @@
 {% extends "layout.html" %}
 {% block content %}
+
     <div class="content-section">
         <form method="POST" action="" novalidate="novalidate">
 
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-3"> Add Stock: </legend>
+                <legend class="border-bottom mb-3"> Add Stock to Portfolio: </legend>
                 <!-- ticker input -->
                 <div class="form-group">
                     {{ form.ticker.label(class="form-control-label") }}
                     {% if form.ticker.errors %}
-                    {{ form.ticker(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
+                    {{ form.ticker(class="form-control form-control-sm is-invalid") }}
                         <div class="invalid-feedback">
                             {% for error in form.ticker.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
                     {% else %}
-                        {{ form.ticker(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
+                        {{ form.ticker(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-4 col-lg-4") }}
                     {% endif %}
                 </div>
 
@@ -26,14 +27,31 @@
                     <div class="form-group">
                         {{ form.price.label(class="form-control-label") }}
                         {% if form.price.errors %}
-                        {{ form.price(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4 is-invalid") }}
+                        {{ form.price(class="form-control form-control-sm is-invalid") }}
                             <div class="invalid-feedback">
                                 {% for error in form.price.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.price(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-6 col-lg-4") }}
+                            {{ form.price(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-4 col-lg-4") }}
+                        {% endif %}
+                    </div>        
+            </fieldset>
+
+            <fieldset class="form-group">
+                    <!-- quantity bought -->
+                    <div class="form-group">
+                        {{ form.quantity.label(class="form-control-label") }}
+                        {% if form.quantity.errors %}
+                        {{ form.quantity(class="form-control form-control-sm is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.quantity.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.quantity(class="form-control form-control-sm col-xs-12 col-sm-8 col-md-4 col-lg-4") }}
                         {% endif %}
                     </div>        
             </fieldset>
@@ -44,14 +62,50 @@
         </form>
 
 
-        <!-- Display Stock Data -->
-        {% for key, value in data.items() %}
-            <h3>{{key}}</h1>
-            <h5>{{value}}</h2>
+        <!-- Portfolio Value-->
+        <legend class="border-bottom mb-4"> 
+            {% if (portfolio_value > initial_portfolio_value)%}
+            <span class="arrow-green">
+                &#x290A
+            </span>
+        {% else %}
+            <span class="arrow-red">
+                &#x290B
+            </span>
+        {% endif %}
+        Portfolio Value:  {{ "$%.2f"|format(portfolio_value) }}
+        <small class="text-muted">
+                <br>Initial Value: {{ "$%.2f"|format(initial_portfolio_value) }}
+        </small>
+        </legend>
 
-                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal">Remove Stock</button>
+        <!-- Display Stock Data -->
+    <div class="card-columns">
+        {% for key, value in data.items() %}
+
+                <div class ="hover-card">
+                    <div class="card">
+
+                        {% if ( value.price_bought > value.High[0]) %}
+                            <div class="card-body right-red">
+                        {% else %}
+                            <div class="card-body right-green">
+                        {%  endif %}
+
+                            <h4 class="card-title">{{key.upper()}}</h4>
+                            <p class="card-text">
+                                Current High: {{value.High[0]}}
+                                <br> Current Low: {{value.Low[0]}}
+                                <br> Price Bought: {{value.price_bought}}
+                                <br> Quantity Bought: {{value.quantity_bought}}
+                            </p>
+                            <button type="button" class="btn btn-outline-info btn-sm m-1" data-toggle="modal" data-target="#deleteModal{{key}}">Remove Stock</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Modal -->
-            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal fade" id="deleteModal{{key}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -74,9 +128,11 @@
             </div>
             
         {% endfor %}
-
     </div>
-    <div class="border-top pt-4 pb-4">
+    </div>
+
+
+    <div class="border-top pt-4">
         <small class="text-muted">
             stockstash
         </small>

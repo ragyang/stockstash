@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, DecimalField, IntegerField
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError, NumberRange
 from stockstash.models import User
 from stockstash.api.alphavantage import is_valid_ticker
 
@@ -64,32 +64,39 @@ class LoginForm(FlaskForm):
             user = None
             raise ValidationError('Email does not exist')
 
-# ticker form
+# ticker form portfolio
 class AddStockForm(FlaskForm):
     ticker = StringField('Ticker',
                            validators=[DataRequired()])
-    price = StringField('Price Bought',
-                            validators=[DataRequired(), Length(min=1, max=100)])
-    #date = DateField('Date Bought', format='%Y-%m-%d')
+    price = DecimalField('Price Bought',
+                            validators=[DataRequired(), NumberRange(min=1, max=None)])
+    quantity = IntegerField('Quantity Bought',
+                            validators=[DataRequired(), NumberRange(min=1, max=None)])
     submit = SubmitField('Add Stock')
 
     def validate_ticker(self, ticker):
+        if None in (ticker.data, self.price.data, self.quantity.data):
+            raise ValidationError('Error! Please try again...')
         if not is_valid_ticker(ticker.data):
             raise ValidationError('Error! Not a valid ticker.')
 
-# ticker form
+# ticker form watchlist
 class AddStockFormWatchlist(FlaskForm):
     ticker = StringField('Ticker',
                            validators=[DataRequired()])
-    lowprice = StringField('Low Price',
-                            validators=[DataRequired(), Length(min=1, max=100)])
-    highprice = StringField('High Price',
-                            validators=[DataRequired(), Length(min=1, max=100)])
+    lowprice = DecimalField('Low Price',
+                            validators=[DataRequired(), NumberRange(min=1, max=None)])
+    highprice = DecimalField('High Price',
+                            validators=[DataRequired(), NumberRange(min=1, max=None)])
     submit = SubmitField('Add Stock')
 
     def validate_ticker(self, ticker):
+        if None in (ticker.data, self.highprice.data, self.lowprice.data):
+            raise ValidationError('Error! Please try again...')
         if not is_valid_ticker(ticker.data):
             raise ValidationError('Error! Not a valid ticker.')
+        if self.lowprice.data >= self.highprice.data:
+            raise ValidationError('Error! Low Price must be lower than High Price')
 
 class RequestResetForm(FlaskForm):
     username = StringField('Email',

@@ -1,7 +1,7 @@
 # stockstash
 > A stock portfolio web application built with Flask.
 
-Stockstash is a Flask application ideal for the individual investor. This application allows users to track their own customizable stock market portfolio and watchlist. The application will utilize RESTful web services to call current and historical stock data and a databased backed system to track profile changes and updates.
+stockstash is a Flask application ideal for the individual investor. This application allows users to track their own customizable stock market portfolio and watchlist. The application will utilize RESTful web services to call current and historical stock data and a databased backed system to track profile changes and updates.
 
 ### Compile / Run Instructions
 Run the following commands in the root project directory.
