@@ -7,11 +7,15 @@ stockstash is a Flask application ideal for the individual investor. This applic
 Run the following commands in the root project directory.
 
 #### Using Flask Development Server:
-** Note: use a virtualenv when using this method
+To run with Flask Development Server:
 ``` bash
 $ pip install -r requirements.txt
 $ python run.py
-NOTE: to run with Gunicorn WSGI Server, use the following command instead of $ python run.py
+```
+
+To run with Gunicorn WSGI Server:
+```bash
+$ pip install -r requirements.txt
 $ ["gunicorn", "--config", "./stockstash/config/gunicorn_config.py", "stockstash:app"]
 ```
 
