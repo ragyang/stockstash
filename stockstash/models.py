@@ -16,13 +16,14 @@ def load_user(user_id):
 
 class Portfolio(mongo.EmbeddedDocument):
     ticker = mongo.StringField()
-    price = mongo.StringField()
+    price = mongo.FloatField()
     date = mongo.StringField()
+    quantity = mongo.IntField()
 
 class Watchlist(mongo.EmbeddedDocument):
     ticker = mongo.StringField()
-    lowprice = mongo.StringField()
-    highprice = mongo.StringField()
+    lowprice = mongo.FloatField()
+    highprice = mongo.FloatField()
 
 class User(mongo.Document, UserMixin):
     username = mongo.StringField(required=True)

@@ -1,11 +1,13 @@
 {% extends "layout.html" %}
 {% block content %}
+
+
     <div class="content-section">
         <form method="POST" action="" novalidate="novalidate">
 
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-3"> Add Stock: </legend>
+                <legend class="border-bottom mb-3"> Add Stock to Watchlist: </legend>
                 <!-- ticker input -->
                 <div class="form-group">
                     {{ form.ticker.label(class="form-control-label") }}
@@ -57,15 +59,63 @@
                 {{ form.submit(class="btn btn-outline-info") }}
             </div> 
         </form>
+    
+        <!-- Watchlist Header -->
+        <legend class="border-bottom mb-4"> 
+            Watchlist
+
+            <!-- Legend Modal -->
+            <small  id="legend-modal" class="text-muted">
+                    <buttontype="button" class="btn-link" data-toggle="modal" data-target="#legendModal">Alert Legend</button>
+            </small>
+
+            <div class="modal fade" id="legendModal" tabindex="-1" role="dialog" aria-labelledby="legendModal" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="legendModal">Watchlist Legend</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class='my-legend'>
+                                    <div class='legend-scale'>
+                                        <ul class='legend-labels'>
+                                        <li><span style='background:#abdca7;'></span>High Price Alert</li>
+                                        <li><span style='background:#ff6961;'></span>Low Price Alert</li>
+                                        <li><span style='background:#171d25;'></span>No Alerts</li>
+                                        </ul>
+                                    </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                
+        </legend>
+
 
 
         <!-- Display Stock Data -->
         <div class="card-columns">
+            
             {% for key, value in data.items() %}
     
                     <div class ="hover-card">
                         <div class="card">
-                            <div class="card-body">
+
+                            {% if ( value.lowprice > value.High[0]) %}
+                                <div class="card-body right-red">
+                            {% elif ( value.highprice < value.High[0]) %}
+                                <div class="card-body right-green">
+                            {% else %}
+
+                            <div class="card-body right-neutral">
+                            {%  endif %}
                                 <h4 class="card-title">{{key.upper()}}</h4>
                                 <p class="card-text">
                                     Current High: {{value.High[0]}}
@@ -73,7 +123,7 @@
                                     <br> Low Value Alert: {{value.lowprice}}
                                     <br> High Value Alert: {{value.highprice}}
                                 </p>
-                                <button type="button" class="btn btn-danger btn-sm m-1" data-toggle="modal" data-target="#deleteModal{{key}}">Remove Stock</button>
+                                <button type="button" class="btn btn-outline-info btn-sm m-1" data-toggle="modal" data-target="#deleteModal{{key}}">Remove Stock</button>
                             </div>
                         </div>
                     </div>
@@ -104,8 +154,8 @@
         {% endfor %}
     </div>
     <div class="border-top pt-4 pb-4">
-        <small class="text-muted">
-            stockstash
-        </small>
-    </div>
+            <small class="text-muted">
+                stockstash
+            </small>
+        </div>
 {% endblock content %}
