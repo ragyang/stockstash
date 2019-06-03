@@ -94,6 +94,7 @@ def portfolio():
         quantity_bought.append(stock['quantity'])
 
     date = get_most_recent_business_day()
+    print(date)
     stockdata = (get_stock_data(tickers, date, date))
     #stockdata = (get_stock_data(tickers, date, date))
 
