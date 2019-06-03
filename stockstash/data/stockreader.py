@@ -1,5 +1,6 @@
 import pandas_datareader as web
 import datetime
+from datetime import timedelta
 
 def get_most_recent_business_day():
    """
@@ -44,11 +45,17 @@ def get_stock_data(tickers, start_date, end_date):
          A dictionary where each key is the stock ticker and the value is that respective
          ticker's data
    """
-
-   # Get stock data as pandas dataframe
+   
    res = {}
    for ticker in tickers:
-      # covert the dataframe to a dict
-      res[ticker] = web.DataReader(ticker,'yahoo', start_date, end_date).head(1).to_dict('list')
-      
+      success = False
+      counter = 0
+
+      while not success and counter < 50:
+         try:
+            res[ticker] = web.DataReader(ticker,'yahoo', start_date - timedelta(days=counter), end_date - timedelta(days=counter)).head(1).to_dict('list')
+            success = True
+         except:
+            counter = counter + 1
+
    return res
