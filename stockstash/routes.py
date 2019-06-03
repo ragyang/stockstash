@@ -94,7 +94,8 @@ def portfolio():
         quantity_bought.append(stock['quantity'])
 
     date = get_most_recent_business_day()
-    stockdata = (get_stock_data(tickers, date, date))
+    stockdata = (get_stock_data(tickers, '2019-05-30', '2019-05-30'))
+    #stockdata = (get_stock_data(tickers, date, date))
 
     # append data to one dict and get sum
     for key in stockdata:
